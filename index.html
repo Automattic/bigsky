@@ -27,8 +27,13 @@
         <div id="config">
             <form>
                 <h2>Configuration</h2>
-                <label for="openai_token" placeholder="sk-">Your OpenAI token</label>
-                <input id="openai_token" type="text">
+                <label for="openai_token">Your OpenAI token</label>
+                <input id="openai_token"  placeholder="sk-" type="text">
+                <label for="openai_model">What model do you want to use?</label>
+                <select id="openai_model">
+                    <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                    <option value="gpt-4">gpt-4</option>
+                </select>
                 <label for="prompt_patterns">System prompt, with the list of possible patterns</label>
 <textarea id="prompt_patterns">
 You are a helpful website generator that creates lists of pages composed of the following patterns. Please only use these patterns.

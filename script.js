@@ -11,8 +11,10 @@ document.addEventListener( "DOMContentLoaded", function() {
             return;
         }
 
+        document.querySelector( '#output' ).value = 'WAIT PLIZ. Generating...';
         generateWebsite(
             document.querySelector( '#openai_token' ).value,
+            document.querySelector( '#openai_model' ).options[ document.querySelector( '#openai_model' ).selectedIndex ].value,
             document.querySelector( '#prompt' ).value,
             document.querySelector( '#prompt_patterns' ).value,
             document.querySelector( '#output_format' ).value
@@ -22,12 +24,12 @@ document.addEventListener( "DOMContentLoaded", function() {
     } );
 } );
 
-async function generateWebsite( token, userPrompt, template, output ) {
+async function generateWebsite( token, model, userPrompt, template, output ) {
     let systemPrompt = template;
     systemPrompt = systemPrompt.replace( '[FORMAT]', output );
 
     const requestBody = JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: model,
         messages: [
             {
                 role: 'system',
