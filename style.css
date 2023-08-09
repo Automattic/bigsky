@@ -1,0 +1,11 @@
+form {
+    display: flex;
+    flex-direction: column;
+}
+form input, #app form label, #app form textarea {
+    margin: 0.5rem;
+}
+
+form textarea {
+    height: 10rem;
+}

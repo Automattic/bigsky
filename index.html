@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Big Sky</title>
+    <link rel="stylesheet" href="style.css">
+
+  </head>
+  <body>
+	<script src="script.js"></script>
+
+    <h1>Big Sky Website generator</h1>
+    <p>This is a helper tool to tweak certain aspects of our thinking, prompts etc.</p>
+    <div>
+        <div id="app">
+            <form>
+                <h2>Generate your website</h2>
+                <label for="prompt">Describe what you want built</label>
+                <textarea id="prompt"></textarea>
+                <input type="submit" value="Generate my website">
+                <textarea id="output"></textarea>
+            </form>
+        </div>
+
+        <div id="config">
+            <form>
+                <h2>Configuration</h2>
+                <label for="openai_token">Your OpenAI token</label>
+                <input id="openai_token" type="text">
+                <label for="prompt_patterns">List of possible patterns</label>
+<textarea id="prompt_patterns">
+Create the outline of a website based on the following customer request: 
+
+[CUSTOMER_PROMPT]
+
+Compose the pages from the following patterns, which should typically include a header and a footer:
+
+Pattern1: A beautiful header with a title and a cover image in the background
+Pattern2: Text block with a title and a paragraph
+Pattern3: Email list signup form
+Pattern4: Contact form
+Pattern5: List of recent blog posts
+…
+
+Return the outline in the following format 
+
+[FORMAT]</textarea>
+<label for="output_format">Example output format in json</label>
+<textarea id="output_format">
+{
+    'title': 'My website',
+    'pages': [
+        {
+            'title': 'Home',
+            'patterns': [
+                'Pattern1',
+                'Pattern2',
+                'Pattern5'
+            ]
+        },
+        {
+            'title': 'Contact',
+            'patterns': [
+                'Pattern1',
+                'Pattern4'
+            ]
+        }
+    ]
+}
+</textarea>
+                <input type="submit" disabled value="Save settings (not yet working, plz edit source to save for later. I imagine this would be saved in localstorage for helper purposes.)">
+            </form>
+        </div>
+
+    </div>
+
+
+  </body>
+</html>
