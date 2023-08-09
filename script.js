@@ -2,6 +2,15 @@ document.addEventListener( "DOMContentLoaded", function() {
     document.querySelector( '#app form' ).addEventListener('submit', function( e ) {
         e.stopPropagation();
         e.preventDefault();
+        if ( document.querySelector( '#openai_token' ).value.length < 1 ) {
+            alert( 'You forgot about the OpenAI token' );
+            return;
+        }
+        if ( document.querySelector( '#prompt' ).value.length < 1 ) {
+            alert( 'Prompt cannot be empty' );
+            return;
+        }
+
         generateWebsite(
             document.querySelector( '#openai_token' ).value,
             document.querySelector( '#prompt' ).value,
@@ -13,21 +22,20 @@ document.addEventListener( "DOMContentLoaded", function() {
     } );
 } );
 
-async function generateWebsite( token, prompt, template, output ) {
-    let effectivePrompt = template;
-    effectivePrompt = effectivePrompt.replace( '[CUSTOMER_PROMPT]', prompt );
-    effectivePrompt = effectivePrompt.replace( '[FORMAT]', output );
+async function generateWebsite( token, userPrompt, template, output ) {
+    let systemPrompt = template;
+    systemPrompt = systemPrompt.replace( '[FORMAT]', output );
 
     const requestBody = JSON.stringify({
         model: 'gpt-3.5-turbo',
         messages: [
             {
                 role: 'system',
-                content: 'You are a document processor that is helping the user build a website from listed patterns. Please only use the listed patterns and return result in a following format',
+                content: systemPrompt,
             },
             {
                 role: 'user',
-                content: effectivePrompt,
+                content: userPrompt,
             }
         ]
     });    
