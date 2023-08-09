@@ -2,20 +2,56 @@ document.addEventListener( "DOMContentLoaded", function() {
     document.querySelector( '#app form' ).addEventListener('submit', function( e ) {
         e.stopPropagation();
         e.preventDefault();
-        const output = generateWebsite(
+        generateWebsite(
             document.querySelector( '#openai_token' ).value,
             document.querySelector( '#prompt' ).value,
             document.querySelector( '#prompt_patterns' ).value,
             document.querySelector( '#output_format' ).value
-        );
-        document.querySelector( '#output' ).value = output;
+        ).then( output => {
+            document.querySelector( '#output' ).value = output;
+        } )
     } );
 } );
 
-function generateWebsite( token, prompt, template, output ) {
+async function generateWebsite( token, prompt, template, output ) {
     let effectivePrompt = template;
     effectivePrompt = effectivePrompt.replace( '[CUSTOMER_PROMPT]', prompt );
     effectivePrompt = effectivePrompt.replace( '[FORMAT]', output );
 
-    return effectivePrompt;
+    const requestBody = JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+            {
+                role: 'system',
+                content: 'You are a document processor that is helping the user build a website from listed patterns. Please only use the listed patterns and return result in a following format',
+            },
+            {
+                role: 'user',
+                content: effectivePrompt,
+            }
+        ]
+    });    
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+        body: requestBody,
+    };
+
+    try {
+        const response = await fetch( 'https://api.openai.com/v1/chat/completions', requestOptions );
+        const data = await response.json();
+        console.log( data );
+        if (data.choices && data.choices.length > 0) {
+            return data.choices[0].message.content.trim();
+        } else {
+            throw new Error('No response text received from the AI model.');
+        }
+    } catch (error) {
+        console.error('Error calling GPT API:', error);
+        return null;
+    }
+
 }
