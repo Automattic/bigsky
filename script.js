@@ -12,6 +12,7 @@ document.addEventListener( "DOMContentLoaded", function() {
         }
 
         document.querySelector( '#output' ).value = 'WAIT PLIZ. Generating...';
+        document.querySelector( '#assembler_links' ).innerHTML = '';
 
         const token = document.querySelector( '#openai_token' ).value;
         const model = document.querySelector( '#openai_model' ).options[ document.querySelector( '#openai_model' ).selectedIndex ].value;
@@ -37,12 +38,44 @@ document.addEventListener( "DOMContentLoaded", function() {
             );
         } ).then( output => {
              document.querySelector( '#output' ).value = output;
-         } );
+             return getPatternMap();
+         } )
+        .then( patternMap => {
+            return Promise.resolve( mapOutputToPages( document.querySelector( '#output' ).value, replacements, patternMap ) );
+        } ).then( pages =>{
+            console.log( pages );
+            pages.forEach( page => {
+                const link = document.createElement( 'LI' );
+                link.innerHTML = `<a target='_blank' href='https://container-great-cori.calypso.live/setup/with-theme-assembler/patternAssembler?ref=calypshowcase&siteSlug=patternassemblertest2.wordpress.com&pattern_ids=${page.patterns.join( ',' )}'>${page.title}</a>`;
+                document.querySelector( '#assembler_links' ).appendChild( link );
+            } );
+        } );
 
     } );
 } );
 
+function mapOutputToPages( output, replacements, patternMap ) {
+    pages = output.split( replacements[ 'SEP' ] );
+    pages = pages.map( page => {
+        const lines = page.trim().split(/\r?\n/);
+        return {
+            title: lines[0],
+            patterns: lines.slice(1).map( line => patternMap[ line ] ), // TODO: check for hallucinations.
+        };
+    } );
+    return pages;
+}
 
+
+async function getPatternMap() {
+    const response = await fetch( 'https://public-api.wordpress.com/rest/v1/ptk/patterns/en' );
+    const data = await response.json();
+    const patternMap = {};
+    data.forEach(element => {
+        patternMap[ element.name ] = element.ID;
+    });
+    return patternMap;
+}
 
 async function openaiCall( token, model, prompt, replacements = {} ) {
 
