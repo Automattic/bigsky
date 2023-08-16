@@ -39,8 +39,7 @@ document.addEventListener( "DOMContentLoaded", function() {
         } ).then( output => {
              document.querySelector( '#output' ).value = output;
              return getPatternMap();
-         } )
-        .then( patternMap => {
+         } ).then( patternMap => {
             return Promise.resolve( mapOutputToPages( document.querySelector( '#output' ).value, replacements, patternMap ) );
         } ).then( pages =>{
             console.log( pages );
@@ -55,14 +54,29 @@ document.addEventListener( "DOMContentLoaded", function() {
 } );
 
 function mapOutputToPages( output, replacements, patternMap ) {
+
     pages = output.split( replacements[ 'SEP' ] );
     pages = pages.map( page => {
-        const lines = page.trim().split(/\r?\n/);
+        let lines = page.trim().split(/\r?\n/);
+
+        if ( lines.length < 2 ) {
+            return false;
+        }
+
+        lines = lines.filter( line => line.length > 1 );
         return {
             title: lines[0],
-            patterns: lines.slice(1).map( line => patternMap[ line ] ), // TODO: check for hallucinations.
+            patterns: lines.slice(1).map( line => {
+                document.getElementById('result_total').innerText = parseInt( document.getElementById('result_total').innerText ) + 1;
+                if ( ! patternMap[ line ] ) {
+                    console.warn( 'Missing pattern: ' + line, lines[0] );
+                    document.getElementById('result_hal').innerText = parseInt( document.getElementById('result_hal').innerText ) + 1;
+                    return false;
+                }
+                return patternMap[ line ]
+            } ).filter( Boolean ),
         };
-    } );
+    } ).filter( Boolean );
     return pages;
 }
 
@@ -85,6 +99,7 @@ async function openaiCall( token, model, prompt, replacements = {} ) {
 
     const requestBody = JSON.stringify({
         model: model,
+        temperature: 0,
         messages: [
             {
                 role: 'user',

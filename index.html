@@ -25,13 +25,15 @@
                 <h2>Generate your website</h2>
                 <label for="prompt">Describe what you want built</label>
                 <textarea id="prompt" placeholder="I would like a website for my photography business. I want it to have a beautiful header that showcases one of my best photos, a section where I can write about my services and experience, a contact page with a form for clients to get in touch with me, and a section where I can showcase my recent blog posts about photography tips and tricks.">
-I want a website for my donut shop.  Also, include one extra page called "Let's go Surfin!" because ßI also like to surf and I want to put up some pictures and write stories about surfing on that page.
-                </textarea>
+I want a website for my donut shop.  Also, include one extra page called "Let's go Surfin!" because I also like to surf and I want to put up some pictures and write stories about surfing on that page.
+</textarea>
                 <input type="submit" value="Generate my website">
                 <textarea id="output"></textarea>
                 <h3>Open in Pattern assembler:</h3>
                 <ul id="assembler_links">
 
+                </ul>
+                <h4>Hallucinated patterns: <span id="result_hal">0</span>/<span id="result_total">0</span></h4>
                 </div>
             </form>
         </div>
@@ -54,7 +56,7 @@ I want a website for my donut shop.  Also, include one extra page called "Let's 
 You are a helpful assitant that generates website layouts based on descriptions that I \
 give you.  I will tell you about a website that I want to create an you will list all of the pages that the \
 website will need.  For each page you will give a title, description, visual layout and content.
-​
+
 You will:
 1) List only the pages that make sense for the website as its described.  Don't add unecessary pages.
 2) Make sure that all of the important pages are there to accomplish the goals of the site.
@@ -62,21 +64,21 @@ You will:
 4) Describe any extra functionality that a page should have, like the ability to take orders or solicit user comments.
 5) Do not write out the actual content that should be on the page - only a description of what kind of content it should contain.
 6) Be consise in the descriptions, layout and content if it's possible.
-​
+
 Respond only in the following format for each page:
-​
+
 Title: ...
 Description: ...
 Layout: ...
 Content: ...
 [SEP]
-​
+
 Always include the separator [SEP] between each page
-​
+
 Here is the description of the website that I would like  to create:
-​
+
 [PROMPT]
-                </textarea>
+</textarea>
 
 
                 <label for="prompt_patterns">System prompt, with the list of possible patterns</label>
@@ -86,7 +88,7 @@ that I describe to you.  I will give you a list of patterns to choose from, a de
 about each page of the site.  For each page you should choose the best patterns that could be used to make the page \
 as it is described.  Each page should have a pattern for the header, one or more patterns for the body and \
 one for the footer.  Make sure the chosen patterns are suitible for those sections.
-​
+
 You will:
 1) Use only the patterns that are listed below.  Do not make up new patterns.  Reference patterns by their exact name.  Do not cheat.
 2) Choose the patterns for each page that most closely match the layout.  
@@ -97,25 +99,25 @@ You will:
 7) As best as possible make the design aesthetically pleasing and consistent for the whole site.
 8) Make sure that each page has one for the header section, one or more patterns for the body section and one for the footer section.
 9) When appropriate, make the headers and footers consistent across the site.  But do not do so when the page descriptions are inconsistent with each other.
-​
+
 Here are the patterns that you are permitted to use.  Each pattern is formatted <name>: <description>.  \
 Use the description when choosing which patterns to use for each page.  Reference them by their exact \
 name in your response.
-​
+
 [PATTERNS]
-​
+
 Here is my description of the overall site:
-​
+
 [PROMPT]
-​
+
 Here are the descriptions of the individual pages for the site.  Each page has a title, a description, \
 details about the layout and what type of content it should contain.  Choose patterns that are \
 appropriate for those details:
-​
+
 [LAYOUT]
-​
+
 Choose the best patterns to compose each page.  Respond only in the following format for each page:
-​
+
 <Page Title>
 <header pattern name>
 <body pattern name>
@@ -123,9 +125,8 @@ Choose the best patterns to compose each page.  Respond only in the following fo
 ...
 <footer pattern name>
 [SEP]
-​
+
 Always include the separator [SEP] between each page
-​
 </textarea>
 
 
