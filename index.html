@@ -6,7 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Big Sky</title>
     <link rel="stylesheet" href="style.css">
-
+    <style>
+        label {
+            display: block;
+            margin: 0.5rem 0;
+            font-size: 1.2rem;
+        }
+    </style>
   </head>
   <body>
 	<script src="script.js"></script>
@@ -18,7 +24,9 @@
             <form>
                 <h2>Generate your website</h2>
                 <label for="prompt">Describe what you want built</label>
-                <textarea id="prompt" placeholder="I would like a website for my photography business. I want it to have a beautiful header that showcases one of my best photos, a section where I can write about my services and experience, a contact page with a form for clients to get in touch with me, and a section where I can showcase my recent blog posts about photography tips and tricks."></textarea>
+                <textarea id="prompt" placeholder="I would like a website for my photography business. I want it to have a beautiful header that showcases one of my best photos, a section where I can write about my services and experience, a contact page with a form for clients to get in touch with me, and a section where I can showcase my recent blog posts about photography tips and tricks.">
+I want a website for my donut shop.  Also, include one extra page called "Let's go Surfin!" because ßI also like to surf and I want to put up some pictures and write stories about surfing on that page.
+                </textarea>
                 <input type="submit" value="Generate my website">
                 <textarea id="output"></textarea>
             </form>
@@ -31,46 +39,728 @@
                 <input id="openai_token"  placeholder="sk-" type="text">
                 <label for="openai_model">What model do you want to use?</label>
                 <select id="openai_model">
+                    <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
                     <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
                     <option value="gpt-4">gpt-4</option>
                 </select>
+
+                <label for="prompt_layout">Prompt for the layout step</label>
+
+                <textarea id="prompt_layout">
+You are a helpful assitant that generates website layouts based on descriptions that I \
+give you.  I will tell you about a website that I want to create an you will list all of the pages that the \
+website will need.  For each page you will give a title, description, visual layout and content.
+​
+You will:
+1) List only the pages that make sense for the website as its described.  Don't add unecessary pages.
+2) Make sure that all of the important pages are there to accomplish the goals of the site.
+3) Describe the visual layout of each page as well as the type of content that it should contain.
+4) Describe any extra functionality that a page should have, like the ability to take orders or solicit user comments.
+5) Do not write out the actual content that should be on the page - only a description of what kind of content it should contain.
+6) Be consise in the descriptions, layout and content if it's possible.
+​
+Respond only in the following format for each page:
+​
+Title: ...
+Description: ...
+Layout: ...
+Content: ...
+[SEP]
+​
+Always include the separator [SEP] between each page
+​
+Here is the description of the website that I would like  to create:
+​
+[PROMPT]
+                </textarea>
+
+
                 <label for="prompt_patterns">System prompt, with the list of possible patterns</label>
-<textarea id="prompt_patterns">
-You are a helpful website generator that creates lists of pages composed of the following patterns. Please only use these patterns.
-User describes the website they want built and your job is to generate list of pages according to your knowledge of the typical websites.
-
-Pattern1: A beautiful header with a title and a cover image in the background
-Pattern2: Text block with a title and a paragraph
-Pattern3: Email list signup form
-Pattern4: Contact form
-Pattern5: List of recent blog posts
-
-Please return the output only in the following format:
-[FORMAT]</textarea>
-
-<label for="output_format">Example output format in json</label>
-<textarea id="output_format">
-{
-    'title': 'My website',
-    'pages': [
-        {
-            'title': 'Home',
-            'patterns': [
-                'Pattern1',
-                'Pattern2',
-                'Pattern5'
-            ]
-        },
-        {
-            'title': 'Contact',
-            'patterns': [
-                'Pattern1',
-                'Pattern4'
-            ]
-        }
-    ]
-}
+                <textarea id="prompt_patterns">
+You are a helpful assistant that chooses appropriate patterns to build the pages of a website \
+that I describe to you.  I will give you a list of patterns to choose from, a description of a website and the details \
+about each page of the site.  For each page you should choose the best patterns that could be used to make the page \
+as it is described.  Each page should have a pattern for the header, one or more patterns for the body and \
+one for the footer.  Make sure the chosen patterns are suitible for those sections.
+​
+You will:
+1) Use only the patterns that are listed below.  Do not make up new patterns.  Reference patterns by their exact name.  Do not cheat.
+2) Choose the patterns for each page that most closely match the layout.  
+3) Order the patterns sequentially, in the order they will appear on the page.
+4) Generate patterns for all the pages I describe.
+5) Do not generate patterns for new pages.  Do not add extra pages.
+6) Use both my overall description for the site and the description of the individual page when choosing patterns.
+7) As best as possible make the design aesthetically pleasing and consistent for the whole site.
+8) Make sure that each page has one for the header section, one or more patterns for the body section and one for the footer section.
+9) When appropriate, make the headers and footers consistent across the site.  But do not do so when the page descriptions are inconsistent with each other.
+​
+Here are the patterns that you are permitted to use.  Each pattern is formatted <name>: <description>.  \
+Use the description when choosing which patterns to use for each page.  Reference them by their exact \
+name in your response.
+​
+[PATTERNS]
+​
+Here is my description of the overall site:
+​
+[PROMPT]
+​
+Here are the descriptions of the individual pages for the site.  Each page has a title, a description, \
+details about the layout and what type of content it should contain.  Choose patterns that are \
+appropriate for those details:
+​
+[LAYOUT]
+​
+Choose the best patterns to compose each page.  Respond only in the following format for each page:
+​
+<Page Title>
+<header pattern name>
+<body pattern name>
+<body pattern name>
+...
+<footer pattern name>
+[SEP]
+​
+Always include the separator [SEP] between each page
+​
 </textarea>
+
+
+        <label for="pattern_descriptions">Pattern descriptions</label>
+        <textarea id="pattern_descriptions">
+header-with-two-rows: A pattern with a header that has two rows, the first row contains a navigation menu and social links, and the second row contains a site title and a search bar.
+
+header-with-button-and-background: A header pattern with a full-width background color, a logo and navigation links aligned to the right, and a button for starting a project.
+
+minimal-header-with-navigation-and-social-icons: A minimal header pattern with navigation and social icons, featuring a full-width layout with a constrained content area, a medium-sized site title, and small-sized social icons aligned to the right.
+
+header-with-navigation-buttons: A pattern with a header that contains navigation buttons aligned to the right side of the page.
+
+stacked-header-with-social-icons-and-search: This pattern is a stacked header with social icons and a search bar. It has a full-width layout with a group of columns containing the social icons on the left, an empty column in the middle, and the search bar on the right. It also includes a site logo, site title, and a navigation menu at the bottom.
+
+brand-logos: This pattern features a full-width group with a tertiary background color and a centered layout of brand logos, each displayed as a large image with a width of 200px.
+
+pricing-with-two-options: A pattern for pricing with two options, featuring a full-width layout with two columns, each containing a pricing plan, description, and features, along with buttons for sign up and a free trial.
+
+three-testimonials-side-by-side-2: A pattern featuring three testimonials side by side, with a centered heading and paragraph introducing the testimonials. Each testimonial includes a star rating, a short review, an image of the reviewer, their name, and their role.
+
+product-with-price-and-buy-button: A pattern that displays a product with its price and a buy button. The layout includes a centered heading, a description, the price, and a button to reserve the product.
+
+heading-and-video-on-the-right: A pattern with a heading and a video on the right side of the page, with the heading emphasizing the benefits of adding video to a website and the video embedded from YouTube.
+
+three-videos: A pattern with three videos aligned in a wide layout, featuring a centered heading that says "Check out my latest videos."
+
+heading-and-video: A pattern with a full-width layout featuring a centered heading and a video background. The purpose is to showcase a featured message with a strong call to action.
+
+header-with-video-background: A header pattern with a video background, featuring a full-width layout and a centered logo and navigation menu.
+
+product-features-with-image-on-the-right: A pattern with product features displayed in two columns, with an image on the right and text on the left, designed to showcase the benefits of a product.
+
+product-features-with-image-on-the-right-2: A pattern with product features displayed in two columns, with an image on the right and text on the left, showcasing automation, intuitive UI, and analytics.
+
+product-features: This pattern is a layout with three columns, each containing a group with a checkmark, a heading, a description, and a "Learn more" link. It is used to showcase different product features.
+
+product-features-with-two-images: A pattern that displays product features with two images, one on each side, and a centered column of text describing each feature.
+
+faq-with-two-columns: A pattern with two columns that displays frequently asked questions (FAQs) and their answers. The pattern has a heading, a brief introduction, and each question is followed by its corresponding answer.
+
+newsletter-signup: A pattern for a newsletter signup appears as a full-width section with two columns. The left column contains a heading and paragraph describing the newsletter, while the right column has a subscription form with a heading and a button.
+
+faq-two-columns: A two-column FAQ pattern with a full-width layout and a heading on the left column, and a list of questions and answers on the right column.
+
+testimonials: A pattern titled "Testimonials" appears as a full-width cover image with a centered heading and a group of customer testimonials displayed in a vertical layout with rounded profile images and accompanying names and titles.
+
+testimonial-with-image-on-the-right: A pattern with a testimonial and an image on the right side. The testimonial is centered vertically and the image has a rounded border.
+
+contact-with-map-on-the-left: A pattern with a map on the left side and contact information on the right side, allowing visitors to view the location and contact details of a store.
+
+contact-12: A pattern for a contact page with a centered heading and paragraph, followed by a contact form with fields for first name, last name, email, and message.
+
+contact-with-image-on-the-left: A pattern with a contact form on the right side and an image on the left, allowing visitors to get in touch with the website owner.
+
+contact-with-image-on-the-right: A pattern with a contact form and an image on the right side, allowing visitors to get in touch with the website owner.
+
+services-two-columns: A pattern with two columns that displays different types of cleaning services, including residential, commercial, specialized, and carpets & windows.
+
+services-7: This pattern is a full-width layout with a centered heading and a list of services displayed in two columns, each with a service name, separator, and price.
+
+food-menu-2: This pattern is a food menu layout with a wide alignment and a constrained layout. It includes columns with headings, descriptions, and prices for different appetizers, along with an image on the side.
+
+food-menu-4: This pattern is a food menu layout with a full-width design and a constrained layout. It includes sections for different categories of appetizers, each with a title, description, and price.
+
+newsletter-2: This pattern is a newsletter layout that includes a site logo, site title, site tagline, and a subscription block for visitors to receive the latest posts via email. It also features a section for displaying posts with a cover image, post date, post title, and pagination.
+
+newsletter-signup-2: A pattern for a newsletter signup with a full-width layout, featuring a heading, paragraph, and an image background.
+
+newsletter-signup-3: A pattern for a newsletter signup with a full-width layout, featuring a heading, a paragraph, and a subscription button on one side, and a testimonial with a background color and rounded corners on the other side.
+
+testimonial: A testimonial pattern that consists of a full-width group with two columns, one for an image and the other for a quote and author.
+
+three-testimonials-side-by-side: A pattern featuring three testimonials side by side, with each testimonial consisting of a quote, an image, and the name and title of the person giving the testimonial. The pattern is designed to showcase positive feedback from customers or clients.
+
+two-testimonials-side-by-side-2: This pattern features two testimonials side by side, with a centered heading and star ratings for each testimonial. The testimonials are displayed in a bordered box with a background color, and each testimonial includes a photo, name, and job title.
+
+two-products-with-buy-button: This pattern features two products displayed side by side with images, titles, ratings, prices, and a "Buy now" button for each product. The layout is aligned wide and the purpose is to showcase and sell stationery sets.
+
+three-products-with-buy-buttons: This pattern features three products with buy buttons displayed in a full-width layout. Each product is accompanied by an image, a brief description, and a button to purchase it.
+
+payment-block-2: A payment block pattern with a full-width layout featuring a heading, paragraphs, and a payment button for booking a class on cake decoration.
+
+faq-with-three-columns: A pattern with three columns that displays frequently asked questions (FAQs) with answers. The layout is aligned wide and the columns are vertically oriented.
+
+pricing-with-three-options-and-background: A pattern with three pricing options displayed in a full-width layout with a background color, each option includes a title, description, and a list of features, and there is a button for signing up or starting a free trial.
+
+faq: This pattern is a Frequently Asked Questions (FAQ) section on a website. It has a wide layout with a heading, a brief introduction, and multiple columns with questions and answers.
+
+pricing: This pattern is a pricing layout with three columns, each representing a different pricing tier, and includes a heading, paragraph, list of features, and a button for each tier.
+
+blog-posts-with-title-excerpt-category-author-name-date-and-tag: A pattern for displaying blog posts with a title, excerpt, category, author name, date, and tag. The layout includes a group with a post title, excerpt, category, author name, date, and tag, followed by pagination and a message for no results found.
+
+latest-blog-posts-with-date-title-excerpt-and-category: A pattern that displays the latest blog posts on a website, including the date, title, excerpt, and category. The layout is full-width with constrained spacing, and it includes pagination and a message for when there are no results.
+
+latest-post-list-in-column-with-large-post-title-date-author-name-category-and-tag: A blog post list pattern with a column layout featuring a large post title, date, author name, category, and tag.
+
+latest-post-list-in-column: A pattern that displays a list of blog posts in a column layout, with each post showing the title, date, excerpt, and category. It also includes pagination and a message for when there are no results found.
+
+blog-posts-with-uppercase-large-title-and-small-date: A pattern that displays a list of blog posts with a large uppercase title and a small date below it, along with pagination and a message for no results found.
+
+five-latest-posts-with-post-title-and-date: This pattern is a layout for displaying the five latest blog posts with their titles and dates. It has a full-width alignment with padding and a constrained layout.
+
+full-width-list-of-five-recent-posts: A full-width list of five recent blog post titles with a separator and a message for no results found.
+
+three-latest-posts-with-section-title-and-post-title: A pattern that displays three blog posts with a section title and post title, along with a separator and a message for when there are no results found.
+
+three-latest-posts-with-title-and-date-2: This pattern displays the title and date of the three latest blog posts in a full-width layout, with a constrained design. It also includes a message for when there are no results found.
+
+three-latest-posts-with-title-and-date: This pattern displays the three latest blog posts with their titles and dates in a full-width layout, with each post's title as a clickable link and the date aligned to the right.
+
+centered-call-to-action: A centered call to action pattern with a full-width layout and a background color, featuring a large heading that promotes a small pottery studio and gallery based in Byron Bay.
+
+heading-and-three-images-with-rounded-borders: A pattern with a centered heading and three images arranged in a row, each with rounded borders. The purpose is to display visual media, such as photography or design.
+
+three-columns-with-images: This pattern features three columns with images, aligned wide, and each column has a heading and a paragraph with a link.
+
+three-columns-with-heading-text-and-image: This pattern features three columns with a heading, text, and image. It is designed to showcase different topics or ideas with a visually appealing layout.
+
+a-heading-paragraph-and-two-images: A pattern with a heading, paragraph, and two images arranged in columns. The purpose is to display content and images in a visually appealing layout.
+
+full-width-media-and-text-with-background-2: A full-width media and text pattern with a background color, featuring an image on the right and a heading, paragraph, and button on the left.
+
+full-width-media-and-text-with-background: A pattern that features a full-width image with text and a background color, designed to encourage visitors to take action.
+
+call-to-action-with-image-on-the-left: A pattern with a call to action button and an image on the left side, with a constrained layout and a tertiary background color.
+
+call-to-action-with-image-on-the-right-2: A pattern with a call to action button and text on the left side, and an image on the right side.
+
+resume: A pattern for a resume layout with a wide alignment, featuring sections for a brief introduction, experience, speaking engagements, and contact information.
+
+footer-with-social-links-and-wordpress-link: A footer pattern that displays social links (Tumblr, Instagram, Email) on the left and a WordPress link on the right.
+
+center-aligned-minimal-footer-with-dark-background-and-social-icons: A center-aligned minimal footer with a dark background and social icons, featuring a WordPress.com site description.
+
+left-aligned-minimal-footer: A left-aligned minimal footer pattern that displays contact information, including an email address, phone number, and a brief description of the website.
+
+center-aligned-minimal-footer: A center-aligned minimal footer pattern that displays contact information, including an email address, phone number, and a brief description of the website.
+
+center-aligned-minimal-footer-with-dark-background: Center-aligned minimal footer with dark background. The footer contains contact information and a link to the email address.
+
+three-columns-with-address-and-open-times: A pattern with three columns that display email, phone number, address, and open times, aligned in a wide layout.
+
+three-columns-with-contact-info-and-social-icons: This pattern features three columns with contact information and social icons. The layout is aligned wide and the purpose is to display important contact details and social media links.
+
+grid-of-posts-3x2: A grid layout with 3 columns and 2 rows that displays posts, including featured images, titles, excerpts, and dates, with pagination and a message for no results found.
+
+list-of-posts: A pattern that displays a list of blog posts with their titles, dates, featured images, and excerpts, along with pagination and a message for when there are no results found.
+
+grid-of-posts-2x3: A grid layout with 2 rows and 3 columns that displays posts, including featured images, titles, excerpts, dates, and pagination, with the purpose of highlighting blog updates and articles.
+
+link-in-bio-with-anime-background-2: A pattern with an anime background and a link in bio layout, featuring a full-width cover image, site logo, site title, site tagline, and buttons for blog updates and opinions.
+
+link-in-bio-with-painting: A pattern with a full-width cover image and two columns, featuring a painting by Claude Monet and a group of buttons linking to various resources related to Impressionism.
+
+link-in-bio-with-flowery-wallpaper: A pattern with a floral wallpaper background and a centered site logo and title. It includes a group of buttons with links to different articles.
+
+newsletter-subscription-with-full-width-cover: A pattern with a full-width cover image and a newsletter subscription block that includes a podcast title, description, and a subscribe button.
+
+blog: This pattern is a blog layout that is used for displaying and organizing blog posts on a website.
+
+link-in-bio-with-retro-pink-background: A pattern with a retro pink background that includes a full-width image, site logo, site title, site tagline, and a group of buttons with rounded corners. The purpose of the pattern is to provide a visually appealing and organized layout for sharing curated links in a "Link in Bio" section.
+
+link-in-bio-with-synthwave-background: A pattern with a synthwave background and a link in bio layout, featuring a centered site logo, site title, site tagline, and a set of buttons for different actions.
+
+grid-of-posts-4x2: A grid layout with 4 columns and 2 rows that displays posts, with each post featuring a featured image and title.
+
+footer-with-address-email-address-and-social-links: A pattern for a footer that includes an address, email address, and social links. The layout is aligned to the full width of the page with columns and a wide alignment.
+
+hero-with-heading-and-cover-image: A pattern with a full-width layout featuring a heading and a cover image, commonly used to introduce a nature photographer's portfolio website.
+
+image-title-date-and-name: This pattern features a full-width layout with an image on the left, a title and date on the right, and a name below the title. It is commonly used for displaying photography or visual media in a gallery or portfolio.
+
+header-with-button: A header pattern with a logo, site title, navigation links, and a button for starting a project.
+
+list-of-events: A pattern that displays a list of upcoming events, with each event showing the name of the venue, its address, and the date and time of the event.
+
+two-column-food-menu: This pattern is a two-column food menu layout with a full-width alignment. It includes sections for burgers and salads, each with a title, description, and price.
+
+product-feature-with-buy-button: A pattern featuring a product with a buy button, including an image, product name, original and discounted price, and a centered buy button.
+
+newsletter-signup-with-video-background: A pattern that features a newsletter signup form with a video background, centered on the right side of the page.
+
+footer-with-newsletter-subscription-form: A pattern with a full-width footer that includes a newsletter subscription form, social media links, and information about the blog.
+
+newsletter-intro: A pattern called "Newsletter Intro" appears as a full-width cover with a centered site logo, site title, site tagline, and a subscription block for visitors to receive the latest posts via email.
+
+newsletter-intro-with-dark-background-image: A newsletter intro pattern with a dark background image and a centered logo, site title, tagline, and subscription block.
+
+newsletter-intro-with-light-background-image: A newsletter intro pattern with a light background image, featuring a centered site logo, site title, tagline, and a subscription form.
+
+in-post-newsletter-signup: A pattern that appears within a blog post, featuring a centered paragraph inviting readers to subscribe for more posts, followed by a compact newsletter signup form with a primary button and a separator above and below.
+
+large-newsletter-signup: A large newsletter signup pattern that adds a subscription block to a website, allowing visitors to receive the latest posts via email.
+
+newsletter-signup-with-fixed-background-image: A pattern with a fixed background image and a newsletter signup form. The pattern has a full-width layout with a parallax effect and a title that says "You don't wanna miss it" followed by a subtitle that says "Get the latest articles in your inbox."
+
+newsletter-signup-with-media-on-the-left: A pattern with a newsletter signup form on the left side of the page, accompanied by a media element (an image) on the right side.
+
+two-column-newsletter-signup: A two-column newsletter signup pattern with a dark background and a centered left alignment. The left column contains a heading and the right column contains a paragraph and a subscription form with a black background and a subscribe button.
+
+newsletter-signup-with-lots-of-site-logos: A pattern with a newsletter signup form that includes multiple site logos arranged in columns, with a centered email input field and a subscribe button at the bottom.
+
+bold-newsletter-signup: A bold newsletter signup pattern with a full-width layout, featuring a prominent heading and a subscription block with a custom button and color scheme.
+
+faqs-6: A pattern titled "FAQ's" that consists of a wide-aligned group with a heading and multiple groups of headings and paragraphs, providing answers to frequently asked questions.
+
+two-column-cta: This pattern is a two-column call-to-action (CTA) layout with a large heading and a link to send an email, designed to encourage visitors to take action.
+
+two-buttons-centered-cta: A pattern with two centered buttons, one for ordering and one for learning about the business, with a heading and paragraph describing the business.
+
+simple-two-column-layout: This pattern is a simple two-column layout with a wide alignment. It is designed to showcase different services, with each column containing a heading and a paragraph describing the service.
+
+centered-heading-with-cta: A pattern with a centered heading and call-to-action (CTA) button. It features a full-width background image, a heading, a short description, and a "Shop Now" CTA button.
+
+portfolio-project: A pattern with a cover image and two columns, one with text and a button, and the other with an image. The purpose is to showcase a portfolio project with a call-to-action to see the project.
+
+heading-with-image-grid: This pattern features a full-width heading followed by a grid of images. It is designed to showcase a Parisian floral studio and their floral art pieces.
+
+team-4: This pattern is a team layout that showcases three team members with their names, titles, and descriptions. Each team member is displayed in a column with an image on the left and their information on the right.
+
+3-column-testimonials: This pattern is a 3-column layout with testimonials. Each column contains an image, a centered quote, and a caption. It is used to showcase customer reviews and feedback about a brand or business.
+
+cover-image-with-cta: A pattern that features a cover image with a call-to-action (CTA) button, displaying an image with text and a button overlayed on top, encouraging visitors to take action.
+
+names-list: A pattern called "Names List" appears as a full-width cover with two columns of names listed in uppercase, with a background color and large font size. It is used to display a list of names.
+
+two-column-cta-2: A pattern with two columns, featuring a heading and paragraph on one side and a button on the other side, designed to encourage visitors to take action.
+
+portfolio-intro: A pattern called "Portfolio Intro" that introduces a product and UI designer focusing on mobile, with additional information including contact details.
+
+gallery-with-description-on-the-left: A pattern with a gallery of images on the right and a description on the left, designed to showcase artwork and encourage visitors to make a purchase.
+
+large-intro-text: A pattern with a large introductory text section at the bottom left of the page, featuring a heading and a paragraph with a background color, used to introduce yourself or your brand to visitors.
+
+squared-media-text: A pattern with a full-width layout featuring two columns. The left column contains a heading, description, and a button, while the right column displays an image. The pattern is used to showcase two different projects.
+
+horizontal-media-text: This pattern is a horizontal layout with a combination of media (images) and text. It is designed to showcase two different topics with headings and images side by side.
+
+offset-projects: This pattern is a full-width layout with two columns. It features an image on one side and a group of paragraphs on the other side, describing two different projects.
+
+case-study: This pattern is a case study layout with a wide alignment and two columns. The left column contains a large heading and paragraphs of text, while the right column displays client and project duration information.
+
+heading-with-two-images-and-descriptions: A pattern with a wide layout that includes a heading, two images, and descriptions. The purpose of this pattern is to present initial research with accompanying visuals.
+
+cv-text-grid: A pattern called "CV Text Grid" appears as a wide layout with two columns. The left column contains a description of the person's background and experience, while the right column lists recent speaking engagements and contact information.
+
+tall-item-one-column: This pattern is a tall one-column layout with a full-width image at the top, followed by two columns of text, and a group of paragraphs at the bottom. It is likely used for displaying a product or artwork with accompanying information.
+
+two-column-testimonials: This pattern is a two-column layout with testimonials. It features quotes from satisfied clients along with their names and positions.
+
+call-to-action-with-image-on-the-right: A pattern with a call to action button and an image on the right side, encouraging visitors to shop for contemporary ceramics handmade in Australia.
+
+subscription-with-image-on-the-right: A pattern with a subscription form on the right side of the page, featuring an image on the left and a discount offer with a call-to-action button below it.
+
+cover-image-with-centered-text-and-a-button: A pattern with a cover image that has centered text and a button, designed to encourage visitors to take action.
+
+media-and-text-with-image-on-the-right: A pattern with media and text, where the image is positioned on the right side and the text is on the left side. It includes a heading, paragraph, and a button for call to action.
+
+media-and-text-with-image-on-the-left: A pattern with an image on the left and text on the right, featuring a heading, paragraph, and a button for visitors to learn more.
+
+full-width-image: A pattern that displays a full-width image with no margins at the top and bottom, typically used for showcasing photography or visual media.
+
+two-column-image-grid: This pattern is a two-column image grid with a full-width background. It displays images with accompanying text and links.
+
+four-column-list: This pattern is a four-column list layout with a centered heading and paragraphs in each column. It is used to present information in a visually appealing and organized way.
+
+centered-headline-and-text: A pattern with a centered headline and text on a full-width background with padding and a constrained layout. The purpose is to present a headline and accompanying text in a visually appealing and centered manner.
+
+three-columns-with-images-and-text: A pattern with three columns featuring images and text, aligned in a wide layout, with each column representing a different concept or idea.
+
+cover-image-with-left-aligned-call-to-action: A cover image with a left-aligned call to action that encourages visitors to take action.
+
+subscription-yellow-background: A pattern with a yellow background and a centered group containing a heading and paragraph, prompting users to sign up for a newsletter by entering their email address.
+
+subscription-with-blue-cover-background: A pattern with a blue cover background and a subscription block that allows visitors to subscribe to a newsletter for tips, campaigns, and new things.
+
+four-recent-blog-posts: This pattern is a layout for displaying four recent blog posts. It consists of a heading, a link to view all news, and a grid of four blog post previews.
+
+link-in-bio-with-audio-embed: A pattern with a full-width cover image and a centered site title, featuring an audio embed from Spotify and buttons to various music platforms, along with social media links.
+
+centered-header-with-logo-and-navigation: A centered header pattern with a logo and navigation that is aligned in the center of the page and includes links for Home, About, Blog, and Contact.
+
+centered-header: A pattern with a centered header that includes a site logo, site title, and navigation links aligned in the center.
+
+simple-centered-footer: A simple centered footer pattern that displays the "Proudly Powered by WordPress" text in the center of the page.
+
+centered-footer-with-social-links: A centered footer with social links that displays important links and contact information.
+
+footer-with-background-color-and-three-columns: A footer with a background color and three columns, displaying important links and contact information.
+
+footer-with-credit-line-and-navigation: A footer pattern that includes a credit line and navigation links, aligned at the bottom of the page.
+
+footer-with-large-font-size: A pattern with a footer that has a large font size, centered site title, and a paragraph with a centered link to WordPress.
+
+footer-with-navigation-and-credit-line: A footer pattern that includes navigation links and a credit line, with a full-width layout and a constrained inner layout.
+
+large-text-and-socials: A pattern with large text and social media links aligned in a wide layout, used to introduce oneself or a brand to visitors.
+
+link-in-bio-with-gradient-buttons: A pattern with a full-width cover image and centered logo, site title, and tagline. It includes gradient buttons for Soundcloud, Bandcamp, Spotify, YouTube, and Instagram.
+
+link-in-bio-with-subtle-pattern-background: A pattern with a subtle pattern background and a cover image, featuring a centered site logo, site title, and site tagline, along with buttons for various actions like watching an interview, getting information, booking an appointment, and contacting via WhatsApp or email.
+
+link-in-bio-with-background-image: A pattern with a full-width background image and a centered content container, featuring a site logo, site title, tagline, and social media links.
+
+link-in-bio-with-gradient-background-image: A pattern with a gradient background image and a link in the bio section, allowing users to share curated links to their sites and social media profiles.
+
+link-in-bio-with-dark-background: A pattern with a dark background and a cover image that includes a site logo, site title, site tagline, and two columns of links to various social media platforms.
+
+link-in-bio-with-bold-heading-and-purple-background: A pattern with a bold purple background and a full-width layout that features a large heading in a vibrant color, followed by two columns of links to various social media platforms and other content.
+
+link-in-bio-with-mesh-gradient-background: A pattern with a mesh gradient background and a full-width layout that includes a site logo, site title, site tagline, buttons for reading the blog, accessing the YouTube channel, listening to the latest podcast episode, and visiting the merch store, as well as social media links.
+
+link-in-bio-with-image-at-the-bottom: A pattern with a big picture at the bottom and a group of links at the top, typically used for sharing curated links to various sites and social media profiles.
+
+link-in-bio-left-aligned-with-yellow-background: A left-aligned link in bio pattern with a yellow background, featuring a site logo, site title, site tagline, and columns for social media links and contact information.
+
+link-in-bio-with-link-cloud: A pattern with a full-width cover image and a centered layout that displays links to various social media platforms, including Instagram, Twitter, LinkedIn, Email, Dribbble, Soundcloud, and Website.
+
+link-in-bio-with-two-columns-and-dark-background: A pattern with a dark background and two columns, featuring links to various social media platforms and websites.
+
+link-in-bio-with-yellow-background: A pattern with a yellow background and a centered logo and title, followed by a group of buttons with different colors, used for sharing curated links.
+
+three-logos-heading-and-paragraphs: This pattern features three logos at the top, followed by a heading and two paragraphs of text. It is a layout commonly used to showcase awards or achievements.
+
+contact-info-with-map: A pattern that displays contact information and a map, with the contact information on the left side and the map on the right side.
+
+call-to-action-with-button: A full-width call to action section with a rounded button, featuring a medium-sized paragraph and a large heading, encouraging visitors to contact the website.
+
+four-images-in-grid: A pattern with a grid layout featuring four images, each accompanied by a location description. The purpose of this pattern is to display a gallery of images with captions.
+
+large-headline: A pattern with a large headline that introduces a brand or individual, with a full-width layout and padding around the text.
+
+large-numbers-heading-and-paragraphs: A pattern with large numbers, a heading, and paragraphs arranged in columns, used to showcase statistics and information about sustainable energy and ecological conservation.
+
+newsletter-subscription: A pattern that appears as a full-width section with a centered heading and a subscription block for a newsletter, encouraging visitors to subscribe to the website's newsletter.
+
+paragraph-and-properties: A pattern with a full-width layout that consists of two columns. The left column contains paragraphs describing the complexity of architecture, while the right column displays location, client, project type, and category information.
+
+images-and-paragraphs-on-grid: This pattern features a grid layout with images and paragraphs. It is used to showcase profiles of different architects, including their names, titles, and descriptions of their work.
+
+two-images-and-quote: This pattern features two images with a quote in between them, displayed in a full-width layout.
+
+two-images-in-grid: This pattern features a grid layout with two images, each accompanied by a location description. It is a gallery pattern that displays photography and visual media.
+
+payment-buttons-image-and-text: This pattern features a full-width layout with a group containing payment buttons, an image, and text. The purpose of the pattern is to showcase a foundation and encourage users to support it by making a payment.
+
+header-with-site-title-and-vertical-navigation: A pattern with a header that includes the site title and a vertical navigation menu. The header is aligned full width and the navigation menu is aligned to the right.
+
+header-with-site-title-and-menu-button: A pattern with a header that includes the site title and a menu button, aligned wide with flex layout and navigation links for About, Home, and Contact.
+
+simple-header-with-tagline: A simple header with a tagline that includes a site logo, site title, site tagline, and navigation links aligned to the right.
+
+simple-header-with-image-background: A simple header pattern with an image background, featuring a centered logo and a right-aligned navigation menu.
+
+simple-header-with-an-image: A simple header with an image that includes a site logo, site title, and navigation links aligned to the right, with a full-width cover image in the background.
+
+simple-header-with-dark-background: A simple header with a dark background that includes a site logo, site title, and navigation links aligned to the right.
+
+simple-header: A simple header pattern with a site logo, site title, and navigation links aligned in a wide layout with padding.
+
+header-with-large-font-size: A header with large font size that includes a site title and navigation links aligned to the right.
+
+heading-paragraph-and-image: This pattern features a full-width layout with a heading, paragraph, and image. It is designed to introduce and promote tours or adventures, highlighting the reasons why users will love them.
+
+heading-and-five-up: This pattern is a "Heading and Five-up" layout that features a centered heading with a large font size and five images displayed in a grid below it. The purpose of this pattern is to showcase visual media, such as photography, design, and illustration.
+
+heading-and-three-up: A pattern with a heading and three columns, featuring images and descriptions of top destinations.
+
+call-to-action-with-cover-block: A full-width call to action pattern with a cover image on the left and text on the right, encouraging visitors to explore tours.
+
+footer-with-social-icons-address-e-mail-and-telephone-number: A footer pattern that includes social icons, address, email, and telephone number.
+
+quote-with-statue: A pattern featuring a quote with a statue image, displayed in a full-width layout with a colored background. The quote is enclosed in a bordered group with a contrasting background color and includes a testimonial and the name of the person who provided it.
+
+heading-three-up-and-paragraph: This pattern features a full-width layout with three images displayed in a row, followed by a heading and two paragraphs of text. It is likely used to showcase a location or topic with accompanying descriptive content.
+
+heading-and-four-up: This pattern is a full-width layout with a heading and four columns. It is designed to showcase popular products in a store.
+
+quote-4: This pattern is a testimonial quote that appears as a full-width group with a tertiary background color and foreground text color. It includes a paragraph with a quote and another paragraph with the author's name and affiliation.
+
+footer: A footer pattern that includes navigation links, contact details, social links, and a subscription form.
+
+duotone-cover: This pattern is a duotone cover layout with a full-width background color and two columns. The purpose is to showcase a perspective-themed article with headings aligned to the right and images on the left.
+
+payment-block-2-columns-2-rows: A pattern with a payment block that has two columns and two rows. It features an image, a heading, a description, and a "BUY NOW" button.
+
+payment-block-media-and-text: Product page with item details and a payment button.
+
+payment-block-cover-dark: This pattern is a dark-themed payment block cover with a full-width layout. It features a book description, an image, and a button to purchase the book.
+
+payment-block-3-columns: A payment block with three columns that features a pendant image, a description of the pendant, and buttons to discover more information or make a purchase.
+
+payments-block: A payments block pattern with a full-width layout featuring an image of a diamond ring surrounded by text and a "Buy now" button.
+
+payment-block-description: This pattern is a payment block description that includes a full-width slideshow of images, a heading with a price, a paragraph describing the product, and a "Buy Now" button.
+
+payment-block-2-columns-left-image: A pattern with a full-width layout featuring a left-aligned image and a two-column section for displaying featured content and a call-to-action button.
+
+centre-aligned-header: This pattern is a centre-aligned header with a logo, site title, and site tagline in a three-column layout.
+
+ellen: A modern blog layout with a full-width header image, centered headings, and a grid of featured posts.
+
+link-in-bio-2: A pattern called "Link in Bio" appears as a full-width cover with a centered site logo, site title, site tagline, and a group of buttons for various actions like watching tutorials, buying prints, accessing a wish list, and visiting social media profiles.
+
+link-in-bio: A pattern called "Link in Bio" appears as a full-width cover with a gradient background and contains a centered site logo, site title, site tagline, and a vertical list of buttons for subscribing on YouTube, listening on SoundCloud, following on Instagram, shopping style picks, and asking a question.
+
+menu-2: This pattern is a standard menu layout with sections for starters, mains, and desserts. It includes descriptions and prices for each item.
+
+coming-soon-7: A pattern with a full-width image background and a cover overlay, featuring a heading and paragraph describing an upcoming art gallery in downtown Boston, along with contact information and address details.
+
+coming-soon-6: A pattern titled "Coming soon" is a full-width layout with a centered left content position, featuring a dark overlay and a heading that says "Coming Soon." It is designed to build anticipation for an upcoming product or service.
+
+about-me-4: This pattern is an "About me" layout with a full-width group containing two columns. The left column has a heading and paragraph introducing the show, while the right column displays testimonials with star ratings.
+
+latest-podcast-episodes: This pattern is a layout for displaying the latest podcast episodes on a website. It includes a heading, a grid of three episodes with titles and dates, and a placeholder for when there are no results.
+
+project-detail-with-description-3: A pattern for a project detail page with a full-width image on one side and a description, client, project duration, and item origin on the other side.
+
+large-image-and-grid-gallery: A pattern with a large image at the top and a grid gallery below, displaying multiple images. The purpose is to showcase visual media such as photography, design, and illustration.
+
+gallery: A pattern titled "Gallery" on the "Sketchbook" website appears as a wide-aligned group with a constrained layout. It consists of a column with a paragraph and a gallery of large images aligned wide. The purpose of this pattern is to display photography, design, illustration, and other visual media.
+
+single-column-project-detail: A single-column project detail pattern with an aligned full-width image at the top, followed by a heading, paragraph, and additional paragraphs of text.
+
+about-me-3: A two-column layout pattern called "About Me" with a heading, paragraph, and social links on one side, and additional headings, paragraphs, and links on the other side. The purpose is to introduce oneself and provide information about experience, speaking engagements, and writing.
+
+alternating-image-and-text: This pattern features alternating sections of image and text, with each section containing a product name, description, and price. The layout is full-width and the purpose is to showcase different products in a visually appealing way.
+
+organic-gallery-with-intro-text: A pattern titled "Organic gallery with intro text" is a layout that features a centered heading introducing the designer, Linda Antin, along with an image gallery displayed in two columns below the heading.
+
+organic-image-gallery-with-captions: An organic image gallery with captions that features a full-width layout with two columns of images and a spacer in between, showcasing various images with accompanying captions.
+
+project-detail-with-description-2: A pattern for a project detail page with a description, featuring a large image, a heading, and a paragraph of text.
+
+image-with-title-and-description: This pattern is an image portfolio layout with a wide alignment. It consists of two columns, with the left column displaying a title and description, and the right column displaying an image.
+
+image-and-description-side-by-side: An image and description are displayed side by side, with the image taking up two-thirds of the space and the description taking up one-third. The pattern is used for showcasing a textured print in a portfolio.
+
+gallery-with-description-and-a-button: A pattern for a grid gallery with a description and a button. The gallery is displayed in a wide layout with two columns, one for the description and one for the gallery images.
+
+project-detail-with-two-columns: A pattern with a project detail layout featuring two columns. The left column contains a heading and the right column contains an image and paragraphs of text.
+
+duotone-images: This pattern features a full-width layout with alternating images and titles, using a duotone color effect. It is designed to display a gallery of visual media.
+
+project-detail-with-description-and-gallery: A pattern for a project detail page with a description and gallery. The layout consists of a full-width group with two columns, one for the project details and the other for the gallery. The purpose is to showcase a mobile application project with design goals and images.
+
+intro-and-alternating-images: This pattern features an introduction section with alternating images. The layout consists of two columns, with the left column containing a heading and contact information, and the right column left empty. Below the introduction section, there are two media-text sections with images on the left and right, each followed by a heading and a link to a mobile app project.
+
+project-detail-with-description: A pattern for a project detail page with a full-width image at the top, followed by a two-column layout with project information and a description.
+
+about-me-2: This pattern is an "About Me" layout with a full-width image background, a centered profile picture, a centered site title, a centered paragraph introducing the photographer and designer, and social media links displayed as logos in the center.
+
+blog-9: A blog pattern with a full-width image at the top, a centered heading introducing the blog, and a section displaying the latest posts with their content, date, and featured image.
+
+blog-8: This pattern is a blog layout with a header image, a title, and a list of blog posts with their titles and dates.
+
+about-11: This pattern features a centered image at the top, followed by a section with a white background that includes a heading, a paragraph for introducing oneself, and social media links. It is designed for the "About" page to introduce yourself or your brand to visitors.
+
+about-10: This pattern is an "About" section that includes a centered image, a heading, a centered paragraph for introducing oneself, and social media links aligned in the center.
+
+blog-7: This pattern is a blog layout with a centered heading, an image in a rounded style, and a grid of latest posts displayed in two columns.
+
+services-6: A pattern with two columns, where the left column contains headings for "Services" and "Testimonials" and the right column contains descriptions of the services and testimonials from customers.
+
+portfolio-10: This pattern is a portfolio layout with a centered heading introducing the user, followed by a centered paragraph providing more information about the user. It includes a cover image with a project name and description, followed by a gallery of images with captions. The pattern is separated by horizontal lines.
+
+portfolio-9: This pattern is a portfolio layout that includes a centered heading introducing the user, a paragraph with additional information, and a wide gallery of images.
+
+about-8: This pattern is an "About" section that consists of a centered heading, paragraphs for self-description and sample content, and a section for testimonials with quotes from famous individuals. It is designed to introduce oneself or a brand to visitors.
+
+about-7: A pattern that introduces the website owner or brand to visitors, featuring a wide-aligned image at the top followed by two columns of text, one for "About me" and the other for "Expertise."
+
+about-6: This pattern is an "About" section that introduces the website owner or brand to visitors. It includes a description, sample content, testimonials, famous quotes, and a call-to-action button to get in touch.
+
+podcast-contact-form: A pattern titled "Contact Form" that consists of a full-width group with two columns, one for a heading and paragraph, and the other for a contact form. The purpose of this pattern is to display contact information and provide a form for visitors to send messages.
+
+about-me-card: A pattern called "About Me Card" is a layout that includes a group with an image, a site title, a paragraph introducing the person, buttons for getting in touch, and social media links. It is commonly used for sharing information about oneself and connecting with others.
+
+about-me-links: A pattern called "Link in Bio: Mono" appears as a full-width cover with a light background and a centered site logo and title. It includes a paragraph introducing the latest tips, resources, and reads, and a set of buttons linking to recommended articles. The purpose of this pattern is to provide a visually appealing and organized way to share curated links to various sites and social media profiles.
+
+about-me: A pattern titled "About Me" appears as a wide layout with an image on the right side and text on the left. It is used to introduce a tattooist based in Florida City, specializing in fine line tattoos, with a call-to-action button to get in touch.
+
+podcast-hosts: This pattern is a layout for a webpage featuring podcast hosts. It includes a full-width group with two columns, each containing an image of a host and a brief description.
+
+podcast-donate-cta: A pattern with a full-width group containing a wide group with a yellow background and black text, featuring a heading and paragraph on the left and a donation button on the right. The pattern is a call to action for podcast donations.
+
+contact-with-whatsapp-3: This pattern is a contact section with a WhatsApp button. It has a heading, a paragraph explaining the purpose, and a button to chat on WhatsApp.
+
+contact-with-whatsapp-2: A pattern that displays a "Need help?" heading aligned to the right, followed by a WhatsApp chat button aligned to the center, allowing visitors to get in touch via WhatsApp.
+
+contact-with-whatsapp: This pattern is a full-width section with a primary background color and white text. It includes a WhatsApp chat button in the center and a row of rounded thumbnail images below it. The purpose of the pattern is to provide a contact option through WhatsApp and display related images.
+
+image-and-paragraph: This pattern features an image on the left and a heading and paragraph on the right, with a full-width layout. It is commonly used for introducing a person or brand.
+
+image-and-text-side-by-side: An image and text are placed side by side in a full-width layout. The image is on the left and the text is on the right, with the text centered vertically. The purpose of this pattern is to display a visually appealing image with a centered heading and paragraph.
+
+three-images-and-paragraph: A pattern with three images aligned horizontally and a paragraph below, displaying a gallery or portfolio of visual media.
+
+call-to-action-13: This pattern is a "Call to Action" pattern that features two columns with images and headings for "Women" and "Men," along with buttons to "Shop now." The purpose of this pattern is to encourage visitors to take action and shop for products.
+
+full-width-image-with-off-center-text-and-button: A full-width image with off-center text and a button, used as a call to action to encourage visitors to shop.
+
+two-images-text-and-buttons: This pattern features two images, text, and buttons arranged in a full-width layout. It is used to showcase different room designs and encourage visitors to explore more.
+
+call-to-action-10: A banner pattern with a black background and white text that encourages visitors to learn how to generate traffic to their blog in a webinar.
+
+recent-posts-3: This pattern is a recent posts section on a blog website. It has a full-width layout with a heading that says "Latest from the Blog" and displays three posts in a grid format with featured images, titles, excerpts, and dates.
+
+contact-info-and-social-links: A pattern that displays contact information and social links in a full-width layout with two columns, where the left column includes the business name and address, and the right column includes social media icons.
+
+subscription-3: A pattern that displays a subscription banner at the top of a webpage, with a centered column for a message and a larger column for an email subscription form.
+
+call-to-action-9: A full-width Call to Action pattern with a centered heading and a button, featuring a background image and a dark overlay.
+
+call-to-action-8: A pattern with a full-width background gradient, centered text, and a large heading that encourages visitors to take action by getting in touch.
+
+call-to-action-7: A pattern with a full-width layout featuring a heading, paragraph, and buttons on one side, and two images on the other side, designed to encourage visitors to take action.
+
+call-to-action-6: A pattern with a full-width image background and a centered column containing a heading, paragraph, and a button, designed to encourage visitors to take action.
+
+heading-and-three-images: A pattern with a heading and three images, showcasing favorite recipes with their titles.
+
+image-and-quote: A pattern called "Image and Quote" consists of a full-width layout with an image on the left and a quote on the right, emphasizing the power of food in people's lives.
+
+call-to-action-5: A pattern with a centered heading and a button that encourages visitors to book a free online consultation.
+
+call-to-action-4: A pattern with a full-width layout featuring a heading, paragraph, and a call-to-action button on one side, and an image on the other side, encouraging visitors to join online cooking classes.
+
+three-column-text-and-links: This pattern is a three-column layout with text and links. It is used to present information about different plans, ingredients, and dishes, with the purpose of providing options and enticing users to learn more.
+
+quote-and-image: A pattern that features a quote and an image, with the quote aligned to the left and the image aligned to the right. The purpose of this pattern is to showcase a testimonial or review along with a relevant image.
+
+quote-and-logos: This pattern features a full-width group with a white text on a foreground background. It includes a centered quote with a testimonial and the name of the person, followed by a row of four logos.
+
+contact-11: A footer pattern with a full-width layout that includes a paragraph describing the organization and three columns with headings and links for contact information, about, and social media.
+
+podcast-subscription-2: A pattern with a full-width layout and a constrained content area that displays a heading and buttons for subscribing to a podcast.
+
+mayland: A masonry grid gallery pattern with a full-width layout that displays a collection of images in a visually appealing way.
+
+vesta: A minimal grid portfolio with an introduction and contact section, featuring a full-width layout and multiple image columns.
+
+multi-column-text-with-headline: A multi-column text layout with a headline, date, and description, along with an image and bio of the photographer, used for promoting an online lesson on the technical side of photography.
+
+call-to-action-3: A pattern with a full-width layout that includes columns with information about a specific event, such as the date, time, duration, and a button to register.
+
+registration-form: A registration form pattern with a full-width layout and two columns, featuring a heading, paragraph, and contact form on one side, and customer testimonials on the other side.
+
+podcast-subscription: A pattern with a full-width layout and a dark background that encourages users to subscribe to a podcast, displaying buttons for popular podcast platforms.
+
+intro: This pattern is an introduction section on a website, featuring a full-width layout with a heading that introduces a photographer based in London and emphasizes their focus on composition.
+
+right-aligned-text-and-image: A pattern with right-aligned text and image, featuring a group layout with constrained spacing. The text includes a strong element and an emphasized year, while the image is a large size with a link.
+
+quotes-3: This pattern is a testimonial section with a full-width layout and a constrained column design. It includes customer reviews, ratings, and their names and locations.
+
+quotes-2: This pattern is a testimonial section with a full-width layout and a heading that says "What Our Customers Are Saying." It includes three columns, each containing a customer's name, a paragraph of their feedback, and a 5-star rating.
+
+heading-and-paragraph: A pattern with a full-width heading and paragraph layout, featuring a large heading and a paragraph of text, commonly used for introducing a chapter or section of content.
+
+organic-image-collage-with-text-paragraph: An organic image collage with a text paragraph that features a full-width layout with two columns of images on one side and a text paragraph on the other side.
+
+subscription: A pattern with a full-width cover image and a subscription block, encouraging visitors to sign up for new recipes delivered to their inbox.
+
+contact-5: This pattern is a full-width contact section with a black background and white text. It includes a heading that says "Get in touch" and two columns with links to social media platforms and an email address.
+
+hero-with-heading-subtitle-and-two-buttons: A pattern with a full-width hero section featuring a heading, subtitle, and two buttons, designed to encourage visitors to take action.
+
+off-center-image-layout-with-caption: An off-center image layout with a caption, featuring a group of columns with images and text, and a separate group of columns with images and a question. The purpose of this pattern is to showcase a product or content with visual appeal and engage users with a question.
+
+list-2: This pattern is a full-width list layout with a white background and black text. It is used to display a lineup of names in a large font size.
+
+quotes: This pattern is a quotes section with a full-width layout and a primary background color. It features two columns with different quotes and authors.
+
+quote-2: This pattern is a full-width quote with a background color and text color inversion. It includes a quote by Oscar Wilde and is commonly used to highlight important quotations or testimonials.
+
+images-with-titles: This pattern features a full-width layout with a heading and a group of images with titles and dates underneath. It is designed to showcase a gallery of visual media.
+
+two-column-text-and-image: A pattern with two columns, one containing text and the other containing an image. The purpose of this pattern is to display text and an accompanying image side by side.
+
+headline-3: A full-width group with a black background containing a large white headline that introduces a design and development agency based in the Netherlands, with links to "design," "development," and "products."
+
+team-list: This pattern is a team list layout that showcases team members with their names, job titles, and short descriptions. It includes images and brief information about each team member.
+
+numbered-list: This pattern is a numbered list layout with four columns, each containing a number, a heading, and a paragraph. It is used to present information about a process, with each column representing a different step.
+
+list: This pattern is a full-width list layout with a green background and centered text, used to introduce a group of people.
+
+logos: A pattern called "Logos" appears as a full-width group with columns aligned in the center, displaying four identical images in a gallery layout.
+
+image-and-text: A pattern with a side-by-side layout featuring an image on the left and text on the right, commonly used for introducing a brand or displaying visual media.
+
+numbers: A pattern displaying three numbers in large font size, each followed by a corresponding text description, aligned in a wide layout.
+
+contact-3: This pattern is a Contact layout with a full-width group containing a map, contact information, and centered text.
+
+contact: This pattern is a Contact section that displays contact information, including an address and phone number, as well as social media links.
+
+restaurant-delivery: A pattern with a full-width cover image and centered heading and paragraph, encouraging visitors to order food delivery.
+
+restaurant-menu: A pattern for a restaurant menu with a full-width layout, featuring a heading "Menu" and multiple columns displaying food items with descriptions and prices.
+
+three-columns-and-image: A pattern with three columns and an image, where the middle column contains a heading and the other columns are empty. The purpose of this pattern is to display text content alongside an image in a visually appealing layout.
+
+two-images-and-quaote: This pattern features two images and a quote, with the images displayed side by side and the quote centered below them. It is used to highlight important quotations alongside visual media.
+
+call-to-action: A pattern with a full-width layout featuring a centered image on one side and a text section with a bold heading, a quote, and a button on the other side, encouraging visitors to take action.
+
+three-images-side-by-side: A pattern that displays three images side by side in a full-width layout, commonly used for showcasing photography or visual media.
+
+two-images-side-by-side: Two Images Side by Side: This pattern displays two images side by side in a full-width layout, commonly used for showcasing photography or visual media.
+
+description-and-image: A pattern with a full-width layout that combines a description and an image. The description is on the left side, while the image is on the right side. The purpose of this pattern is to showcase a visual element alongside accompanying text.
+
+image-and-description: A pattern with an image and description layout, where the image takes up 75% of the width and the description takes up 25% of the width. The purpose is to display a visual media, such as photography or design, along with accompanying text.
+
+contact-9: A pattern with a full-width layout featuring a bio, an image, and contact information for a musician, including an email address and social links.
+
+contact-8: A contact form with hours pattern that displays a contact form, contact information, and business hours in a two-column layout.
+
+contact-7: This pattern is a contact form with a map. It has a full-width layout with two columns, one for a heading and paragraph, and the other for a contact form and map.
+
+services-3: A pattern with a full-width layout that showcases services and case studies, with headings, paragraphs, and images.
+
+portfolio-7: This pattern is a tiled gallery with an introductory section. It is designed to display photography, design, illustration, and other visual media.
+
+portfolio-6: A modern portfolio pattern with a full-size image at the top, followed by a heading and a paragraph describing the journey.
+
+portfolio-5: This pattern is a full-width gallery grid layout used for displaying a portfolio. It consists of a grid of images with three columns and a square style.
+
+portfolio-4: This pattern is a tiled gallery layout with an introduction. It features a full-width column with a heading and paragraph on one side, and a gallery of images on the other side.
+
+portfolio-3: A portfolio pattern that features a gallery slideshow of projects and a grid layout with project images, titles, and links.
+
+portfolio-2: This pattern is a basic grid portfolio layout that displays a collection of images in a full-width alignment. It is designed for showcasing photography, design, illustration, and other visual media.
+
+portfolio: A modern portfolio with an introduction section, featuring a grid layout of images with headings and links.
+                </textarea>
                 <input type="submit" disabled value="Save settings (not yet working, plz edit source to save for later. I imagine this would be saved in localstorage for helper purposes.)">
             </form>
         </div>

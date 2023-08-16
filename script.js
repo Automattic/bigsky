@@ -12,32 +12,50 @@ document.addEventListener( "DOMContentLoaded", function() {
         }
 
         document.querySelector( '#output' ).value = 'WAIT PLIZ. Generating...';
-        generateWebsite(
-            document.querySelector( '#openai_token' ).value,
-            document.querySelector( '#openai_model' ).options[ document.querySelector( '#openai_model' ).selectedIndex ].value,
-            document.querySelector( '#prompt' ).value,
-            document.querySelector( '#prompt_patterns' ).value,
-            document.querySelector( '#output_format' ).value
+
+        const token = document.querySelector( '#openai_token' ).value;
+        const model = document.querySelector( '#openai_model' ).options[ document.querySelector( '#openai_model' ).selectedIndex ].value;
+
+        let replacements = {
+            SEP: '<--------------->',
+            PROMPT: document.querySelector( '#prompt' ).value,
+            PATTERNS: document.querySelector( '#pattern_descriptions' ).value,
+        };
+
+        openaiCall(
+            token,
+            model,
+            document.querySelector( '#prompt_layout' ).value,
+            replacements
         ).then( output => {
-            document.querySelector( '#output' ).value = output;
-        } )
+            replacements['LAYOUT'] = output;
+            return openaiCall(
+                token,
+                model,
+                document.querySelector( '#prompt_patterns' ).value,
+                replacements
+            );
+        } ).then( output => {
+             document.querySelector( '#output' ).value = output;
+         } );
+
     } );
 } );
 
-async function generateWebsite( token, model, userPrompt, template, output ) {
-    let systemPrompt = template;
-    systemPrompt = systemPrompt.replace( '[FORMAT]', output );
+
+
+async function openaiCall( token, model, prompt, replacements = {} ) {
+
+    for ( const pat in replacements ) {
+        prompt = prompt.replaceAll( "[" + pat + "]", replacements[ pat ] );    
+    }
 
     const requestBody = JSON.stringify({
         model: model,
         messages: [
             {
-                role: 'system',
-                content: systemPrompt,
-            },
-            {
                 role: 'user',
-                content: userPrompt,
+                content: prompt,
             }
         ]
     });    
