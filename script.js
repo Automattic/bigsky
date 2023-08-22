@@ -24,7 +24,8 @@ document.addEventListener( "DOMContentLoaded", function() {
             token,
             'gpt-4',
             'Please act as a user trying to describe a website they want built. Please invent a business, organization or a niche for a creator and create a one-paragraph description of a website for that person.',
-            []
+            null,
+            0.95
         ).then( output => {
             clone.querySelector( '.prompt' ).value = output;
             return Promise.resolve( clone );
@@ -132,7 +133,7 @@ async function getPatternMap() {
     return patternMap;
 }
 
-async function openaiCall( token, model, prompt, replacements = {} ) {
+async function openaiCall( token, model, prompt, replacements = {}, temperature = 0 ) {
 
     for ( const pat in replacements ) {
         prompt = prompt.replaceAll( "[" + pat + "]", replacements[ pat ] );    
@@ -140,7 +141,7 @@ async function openaiCall( token, model, prompt, replacements = {} ) {
 
     const requestBody = JSON.stringify({
         model: model,
-        temperature: 0,
+        temperature: temperature,
         messages: [
             {
                 role: 'user',
