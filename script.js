@@ -1,6 +1,10 @@
 document.addEventListener( "DOMContentLoaded", function() {
     const token = localStorage.getItem( "openai_token" );
-    document.querySelector( '#openai_token' ).value = token;
+    if ( token ) {
+        document.querySelector( '#openai_token' ).value = token;
+    } else {
+        document.querySelector( '#config form' ).classList.remove( 'hidden' );
+    }
 
     document.querySelector( '#config h2 a' ).addEventListener( 'click', function( e ) {
         document.querySelector( '#config form' ).classList.toggle( 'hidden' );
