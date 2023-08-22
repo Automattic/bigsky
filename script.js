@@ -1,4 +1,6 @@
 document.addEventListener( "DOMContentLoaded", function() {
+    document.querySelector( '#openai_token' ).value = localStorage.getItem( "openai_token" );
+
     document.querySelector( '#app form' ).addEventListener('submit', function( e ) {
         e.stopPropagation();
         e.preventDefault();
@@ -50,6 +52,11 @@ document.addEventListener( "DOMContentLoaded", function() {
             } );
         } );
 
+    } );
+    document.querySelector( '#config form' ).addEventListener( 'submit', function( e ) {
+        e.stopPropagation();
+        e.preventDefault();
+        localStorage.setItem( "openai_token", document.querySelector( '#openai_token' ).value );
     } );
 } );
 
