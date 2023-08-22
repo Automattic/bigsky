@@ -15,6 +15,23 @@
         .hidden {
             display: none;
         }
+        td {
+            border: 1px solid black;
+            padding: 0;
+        }
+        td textarea {
+            margin: 0;
+            width: 95%;
+            height: 10rem;
+        }
+        table {
+            width: 100%;
+        }
+        button {
+            margin: 1rem 0;
+            padding: 0.5rem;
+            font-size: 1.2rem;
+        }
     </style>
   </head>
   <body>
@@ -24,21 +41,35 @@
     <p>This is a helper tool to tweak certain aspects of our thinking, prompts etc.</p>
     <div>
         <div id="app">
-            <form>
                 <h2>Generate your website</h2>
-                <label for="prompt">Describe what you want built</label>
-                <textarea id="prompt" placeholder="I would like a website for my photography business. I want it to have a beautiful header that showcases one of my best photos, a section where I can write about my services and experience, a contact page with a form for clients to get in touch with me, and a section where I can showcase my recent blog posts about photography tips and tricks.">
-I want a website for my donut shop.  Also, include one extra page called "Let's go Surfin!" because I also like to surf and I want to put up some pictures and write stories about surfing on that page.
-</textarea>
-                <input type="submit" value="Generate my website">
-                <textarea id="output"></textarea>
-                <h3>Open in Pattern assembler:</h3>
-                <ul id="assembler_links">
+                <button id="generate10">Imagine 10 prompts and generate</button>
+ or 
+                <button id="generate">Generate 1 more website based on prompt in textarea</button>
 
-                </ul>
-                <h4>Hallucinated patterns: <span id="result_hal">0</span>/<span id="result_total">0</span></h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Describe what you want built</td>
+                            <td>Output</td>
+                            <td>Links to Pattern Assembler</td>
+                            <td>Hallucinations</td>
+                        </tr>
+                    </thead>
+                    <template id="website">
+                        <tr>
+                            <td>
+                                <textarea class="prompt" placeholder="A website you want built"></textarea>
+                            </td>
+                            <td><textarea class="output"></textarea></td>
+                            <td><ul class="assembler_links"></ul></td>
+                            <td><span class="result_hal">0</span>/<span class="result_total">0</span></td>
+                        </tr>
+                    </template>
+                    <tbody>
+                    </tbody>
+
+                </table>
                 </div>
-            </form>
         </div>
 
         <div id="config">
@@ -55,8 +86,11 @@ I want a website for my donut shop.  Also, include one extra page called "Let's 
                     <option value="gpt-4">gpt-4</option>
                 </select>
 
+                <label for="prompt_website">Prompt for generating website prompt (pretending to be the user)</label>
+                <textarea id="prompt_website">
+Please act as a user trying to describe a website they want built. Please invent a business, organization or a niche for a creator and create a one-paragraph description of a website for that person.
+                </textarea>
                 <label for="prompt_layout">Prompt for the layout step</label>
-
                 <textarea id="prompt_layout">
 You are a helpful assitant that generates website layouts based on descriptions that I \
 give you.  I will tell you about a website that I want to create an you will list all of the pages that the \
