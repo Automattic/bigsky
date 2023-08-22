@@ -20,7 +20,7 @@ document.addEventListener( "DOMContentLoaded", function() {
         }
         // We do not have a description, but we DO have a token, so let's have the description auto-generated.
         clone.querySelector( '.prompt' ).value = 'Auto generating description';
-        openaiCall(
+        return openaiCall(
             token,
             'gpt-4',
             'Please act as a user trying to describe a website they want built. Please invent a business, organization or a niche for a creator and create a one-paragraph description of a website for that person.',
@@ -29,15 +29,10 @@ document.addEventListener( "DOMContentLoaded", function() {
         ).then( output => {
             clone.querySelector( '.prompt' ).value = output;
             return Promise.resolve( clone );
-        } )
+        } );
     }
 
-
-    document.querySelector( '#generate' ).addEventListener('click', function( e ) {
-        e.stopPropagation();
-        e.preventDefault();
-        const row = document.querySelector('#app tbody').lastElementChild;
-
+    function generateWebsiteForRow( row ) {
         if ( document.querySelector( '#openai_token' ).value.length < 1 ) {
             alert( 'You forgot about the OpenAI token' );
             return;
@@ -85,7 +80,24 @@ document.addEventListener( "DOMContentLoaded", function() {
                 row.querySelector( '.assembler_links' ).appendChild( link );
             } );
         } );
+    }
+
+    document.querySelector( '#generate' ).addEventListener('click', function( e ) {
+        e.stopPropagation();
+        e.preventDefault();
+        const row = document.querySelector('#app tbody').lastElementChild;
+        if ( row.querySelector( '.output' ).value.length < 5 ) {
+            generateWebsiteForRow( row );
+        }
         add_row( false );
+    } );
+    document.querySelector( '#generate10' ).addEventListener('click', function( e ) {
+        e.stopPropagation();
+        e.preventDefault();
+        document.querySelector('#app tbody').innerHTML = '';
+        for ( let i = 0; i < 10; i++ ) {
+            add_row( false ).then( row => generateWebsiteForRow( row ) );
+        }
     } );
 
     document.querySelector( '#config form' ).addEventListener( 'submit', function( e ) {

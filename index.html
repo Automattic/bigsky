@@ -27,7 +27,7 @@
         table {
             width: 100%;
         }
-        #generate {
+        button {
             margin: 1rem 0;
             padding: 0.5rem;
             font-size: 1.2rem;
@@ -42,6 +42,10 @@
     <div>
         <div id="app">
                 <h2>Generate your website</h2>
+                <button id="generate10">Imagine 10 prompts and generate</button>
+ or 
+                <button id="generate">Generate 1 more website based on prompt in textarea</button>
+
                 <table>
                     <thead>
                         <tr>
@@ -51,21 +55,20 @@
                             <td>Hal</td>
                         </tr>
                     </thead>
+                    <template id="website">
+                        <tr>
+                            <td>
+                                <textarea class="prompt" placeholder="A website you want built"></textarea>
+                            </td>
+                            <td><textarea class="output"></textarea></td>
+                            <td><ul class="assembler_links"></ul></td>
+                            <td><span class="result_hal">0</span>/<span class="result_total">0</span></td>
+                        </tr>
+                    </template>
                     <tbody>
-                        <template id="website">
-                            <tr>
-                                <td>
-                                    <textarea class="prompt" placeholder="A website you want built"></textarea>
-                                </td>
-                                <td><textarea class="output"></textarea></td>
-                                <td><ul class="assembler_links"></ul></td>
-                                <td><span class="result_hal">0</span>/<span class="result_total">0</span></td>
-                            </tr>
-                        </template>
                     </tbody>
 
                 </table>
-                <button id="generate">Generate Next One</button>
                 </div>
         </div>
 

@@ -2,3 +2,15 @@ form {
     display: flex;
     flex-direction: column;
 }
+#config {
+    margin: 0 30px;
+}
+
+#config input, #config select, #config textarea {
+    margin: 10px 0;
+    padding: 8px;
+}
+#config textarea {
+    height: 300px;
+}
+
