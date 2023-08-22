@@ -53,23 +53,27 @@ document.addEventListener( "DOMContentLoaded", function() {
         const model = document.querySelector( '#openai_model' ).options[ document.querySelector( '#openai_model' ).selectedIndex ].value;
 
         let replacements = {
-            SEP: '<--------------->',
-            PROMPT: row.querySelector( '.prompt' ).value,
-            PATTERNS: document.querySelector( '#pattern_descriptions' ).value,
+            sep: '<--------------->',
+            prompt: row.querySelector( '.prompt' ).value,
+            patterns: document.querySelector( '#pattern_descriptions' ).value,
         };
 
         openaiCall(
             token,
             model,
-            document.querySelector( '#prompt_layout' ).value,
-            replacements
+            row.querySelector( '.prompt' ).value,
+            replacements,
+            0.8,
+            document.querySelector( '#prompt_layout' ).value
         ).then( output => {
-            replacements['LAYOUT'] = output;
+            replacements['layout'] = output;
             return openaiCall(
                 token,
                 model,
-                document.querySelector( '#prompt_patterns' ).value,
-                replacements
+                document.querySelector( '#prompt_patterns_user' ).value,
+                replacements,
+                0,
+                document.querySelector( '#prompt_patterns' ).value
             );
         } ).then( output => {
              row.querySelector( '.output' ).value = output;
@@ -113,7 +117,7 @@ document.addEventListener( "DOMContentLoaded", function() {
 
 function mapOutputToPages( output, replacements, patternMap, row ) {
 
-    pages = output.split( replacements[ 'SEP' ] );
+    pages = output.split( replacements[ 'sep' ] );
     pages = pages.map( page => {
         let lines = page.trim().split(/\r?\n/);
 
@@ -149,21 +153,30 @@ async function getPatternMap() {
     return patternMap;
 }
 
-async function openaiCall( token, model, prompt, replacements = {}, temperature = 0 ) {
+async function openaiCall( token, model, prompt, replacements = {}, temperature = 0, system_prompt = '' ) {
 
     for ( const pat in replacements ) {
-        prompt = prompt.replaceAll( "[" + pat + "]", replacements[ pat ] );    
+        prompt = prompt.replaceAll( "{" + pat + "}", replacements[ pat ] );
+        system_prompt = system_prompt.replaceAll( "{" + pat + "}", replacements[ pat ] );
     }
 
+    let messages = [];
+    if ( system_prompt.length > 0 ) {
+        messages.push( {
+            role: 'system',
+            content: system_prompt,
+        } );
+    }
+
+    messages.push( {
+        role: 'user',
+        content: prompt,
+    } );
+    
     const requestBody = JSON.stringify({
         model: model,
         temperature: temperature,
-        messages: [
-            {
-                role: 'user',
-                content: prompt,
-            }
-        ]
+        messages: messages,
     });    
     const requestOptions = {
         method: 'POST',
