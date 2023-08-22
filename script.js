@@ -83,8 +83,9 @@ document.addEventListener( "DOMContentLoaded", function() {
         } ).then( pages =>{
             console.log( pages );
             pages.forEach( page => {
+                const containerURL = document.querySelector('#calypso-live').value;
                 const link = document.createElement( 'LI' );
-                link.innerHTML = `<a target='_blank' href='https://container-great-cori.calypso.live/setup/with-theme-assembler/patternAssembler?ref=calypshowcase&siteSlug=patternassemblertest2.wordpress.com&pattern_ids=${page.patterns.join( ',' )}'>${page.title}</a>`;
+                link.innerHTML = `<a target='_blank' href='https://${containerURL}/setup/with-theme-assembler/patternAssembler?ref=calypshowcase&siteSlug=patternassemblertest2.wordpress.com&pattern_ids=${page.patterns.join( ',' )}'>${page.title}</a>`;
                 row.querySelector( '.assembler_links' ).appendChild( link );
             } );
         } );
