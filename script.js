@@ -1,9 +1,36 @@
 document.addEventListener( "DOMContentLoaded", function() {
-    document.querySelector( '#openai_token' ).value = localStorage.getItem( "openai_token" );
+    const token = localStorage.getItem( "openai_token" );
+    document.querySelector( '#openai_token' ).value = token;
 
     document.querySelector( '#config h2 a' ).addEventListener( 'click', function( e ) {
         document.querySelector( '#config form' ).classList.toggle( 'hidden' );
     });
+
+    add_row( false );
+
+    function add_row( description ) {
+        const clone = document.querySelector('#app template').content.querySelector('tr').cloneNode( true );
+        document.querySelector('#app tbody').appendChild( clone );
+        if( description ) {
+            clone.querySelector( '.prompt' ).value = description;
+            return Promise.resolve( clone );
+        }
+        if ( ! token ) {
+            return Promise.resolve( clone );
+        }
+        // We do not have a description, but we DO have a token, so let's have the description auto-generated.
+        clone.querySelector( '.prompt' ).value = 'Auto generating description';
+        openaiCall(
+            token,
+            'gpt-4',
+            'Please act as a user trying to describe a website they want built. Please invent a business, organization or a niche for a creator and create a one-paragraph description of a website for that person.',
+            []
+        ).then( output => {
+            clone.querySelector( '.prompt' ).value = output;
+            return Promise.resolve( clone );
+        } )
+    }
+
 
     document.querySelector( '#generate' ).addEventListener('click', function( e ) {
         e.stopPropagation();
@@ -57,7 +84,7 @@ document.addEventListener( "DOMContentLoaded", function() {
                 row.querySelector( '.assembler_links' ).appendChild( link );
             } );
         } );
-
+        add_row( false );
     } );
 
     document.querySelector( '#config form' ).addEventListener( 'submit', function( e ) {
