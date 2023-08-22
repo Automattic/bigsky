@@ -15,6 +15,15 @@
         .hidden {
             display: none;
         }
+        td {
+            border: 1px solid black;
+            padding: 0;
+        }
+        td textarea {
+            margin: 0;
+            width: 95%;
+            height: 10rem;
+        }
     </style>
   </head>
   <body>
@@ -26,17 +35,25 @@
         <div id="app">
             <form>
                 <h2>Generate your website</h2>
-                <label for="prompt">Describe what you want built</label>
-                <textarea id="prompt" placeholder="I would like a website for my photography business. I want it to have a beautiful header that showcases one of my best photos, a section where I can write about my services and experience, a contact page with a form for clients to get in touch with me, and a section where I can showcase my recent blog posts about photography tips and tricks.">
-I want a website for my donut shop.  Also, include one extra page called "Let's go Surfin!" because I also like to surf and I want to put up some pictures and write stories about surfing on that page.
-</textarea>
-                <input type="submit" value="Generate my website">
-                <textarea id="output"></textarea>
-                <h3>Open in Pattern assembler:</h3>
-                <ul id="assembler_links">
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Describe what you want built</td>
+                            <td>Output</td>
+                            <td>Links to Pattern Assembler</td>
+                            <td>Hal</td>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>
+                            <textarea class="prompt" placeholder="I would like a website for my photography business. I want it to have a beautiful header that showcases one of my best photos, a section where I can write about my services and experience, a contact page with a form for clients to get in touch with me, and a section where I can showcase my recent blog posts about photography tips and tricks."></textarea>
+                        </td>
+                        <td><textarea class="output"></textarea></td>
+                        <td><ul class="assembler_links"></ul></td>
+                        <td><span class="result_hal">0</span>/<span class="result_total">0</span></td>
+                    </tr>
 
-                </ul>
-                <h4>Hallucinated patterns: <span id="result_hal">0</span>/<span id="result_total">0</span></h4>
+                </table>
                 </div>
             </form>
         </div>
