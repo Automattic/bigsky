@@ -14,3 +14,8 @@ form {
     height: 300px;
 }
 
+thead td {
+    font-weight: bold;
+    padding: 12px;
+    text-align: center;
+}

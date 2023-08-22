@@ -27,7 +27,7 @@ document.addEventListener( "DOMContentLoaded", function() {
         return openaiCall(
             token,
             'gpt-4',
-            'Please act as a user trying to describe a website they want built. Please invent a business, organization or a niche for a creator and create a one-paragraph description of a website for that person.',
+            document.querySelector( '#prompt_website' ).value,
             null,
             0.95
         ).then( output => {

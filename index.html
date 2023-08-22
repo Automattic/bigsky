@@ -52,7 +52,7 @@
                             <td>Describe what you want built</td>
                             <td>Output</td>
                             <td>Links to Pattern Assembler</td>
-                            <td>Hal</td>
+                            <td>Hallucinations</td>
                         </tr>
                     </thead>
                     <template id="website">
@@ -86,8 +86,11 @@
                     <option value="gpt-4">gpt-4</option>
                 </select>
 
+                <label for="prompt_website">Prompt for generating website prompt (pretending to be the user)</label>
+                <textarea id="prompt_website">
+Please act as a user trying to describe a website they want built. Please invent a business, organization or a niche for a creator and create a one-paragraph description of a website for that person.
+                </textarea>
                 <label for="prompt_layout">Prompt for the layout step</label>
-
                 <textarea id="prompt_layout">
 You are a helpful assitant that generates website layouts based on descriptions that I \
 give you.  I will tell you about a website that I want to create an you will list all of the pages that the \
