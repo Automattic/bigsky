@@ -12,6 +12,9 @@
             margin: 0.5rem 0;
             font-size: 1.2rem;
         }
+        .hidden {
+            display: none;
+        }
     </style>
   </head>
   <body>
@@ -39,8 +42,8 @@ I want a website for my donut shop.  Also, include one extra page called "Let's 
         </div>
 
         <div id="config">
-            <form>
-                <h2>Configuration</h2>
+            <h2>Configuration <a style="font-size:0.6em" href='#config'>(expand ↕)</a></h2>
+            <form class="hidden">
                 <label for="openai_token">Your OpenAI token</label>
                 <input id="openai_token"  placeholder="sk-" type="text">
                 <input type="submit" value="Save token">
