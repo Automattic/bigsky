@@ -5,27 +5,29 @@ document.addEventListener( "DOMContentLoaded", function() {
         document.querySelector( '#config form' ).classList.toggle( 'hidden' );
     });
 
-    document.querySelector( '#app form' ).addEventListener('submit', function( e ) {
+    document.querySelector( '#generate' ).addEventListener('click', function( e ) {
         e.stopPropagation();
         e.preventDefault();
+        const row = document.querySelector('#app tbody').lastElementChild;
+
         if ( document.querySelector( '#openai_token' ).value.length < 1 ) {
             alert( 'You forgot about the OpenAI token' );
             return;
         }
-        if ( document.querySelector( '#prompt' ).value.length < 1 ) {
+        if ( row.querySelector( '.prompt' ).value.length < 1 ) {
             alert( 'Prompt cannot be empty' );
             return;
         }
 
-        document.querySelector( '#output' ).value = 'WAIT PLIZ. Generating...';
-        document.querySelector( '#assembler_links' ).innerHTML = '';
+        row.querySelector( '.output' ).value = 'WAIT PLIZ. Generating...';
+        row.querySelector( '.assembler_links' ).innerHTML = '';
 
         const token = document.querySelector( '#openai_token' ).value;
         const model = document.querySelector( '#openai_model' ).options[ document.querySelector( '#openai_model' ).selectedIndex ].value;
 
         let replacements = {
             SEP: '<--------------->',
-            PROMPT: document.querySelector( '#prompt' ).value,
+            PROMPT: row.querySelector( '.prompt' ).value,
             PATTERNS: document.querySelector( '#pattern_descriptions' ).value,
         };
 
@@ -43,20 +45,21 @@ document.addEventListener( "DOMContentLoaded", function() {
                 replacements
             );
         } ).then( output => {
-             document.querySelector( '#output' ).value = output;
+             row.querySelector( '.output' ).value = output;
              return getPatternMap();
          } ).then( patternMap => {
-            return Promise.resolve( mapOutputToPages( document.querySelector( '#output' ).value, replacements, patternMap ) );
+            return Promise.resolve( mapOutputToPages( row.querySelector( '.output' ).value, replacements, patternMap, row ) );
         } ).then( pages =>{
             console.log( pages );
             pages.forEach( page => {
                 const link = document.createElement( 'LI' );
                 link.innerHTML = `<a target='_blank' href='https://container-great-cori.calypso.live/setup/with-theme-assembler/patternAssembler?ref=calypshowcase&siteSlug=patternassemblertest2.wordpress.com&pattern_ids=${page.patterns.join( ',' )}'>${page.title}</a>`;
-                document.querySelector( '#assembler_links' ).appendChild( link );
+                row.querySelector( '.assembler_links' ).appendChild( link );
             } );
         } );
 
     } );
+
     document.querySelector( '#config form' ).addEventListener( 'submit', function( e ) {
         e.stopPropagation();
         e.preventDefault();
@@ -64,7 +67,7 @@ document.addEventListener( "DOMContentLoaded", function() {
     } );
 } );
 
-function mapOutputToPages( output, replacements, patternMap ) {
+function mapOutputToPages( output, replacements, patternMap, row ) {
 
     pages = output.split( replacements[ 'SEP' ] );
     pages = pages.map( page => {
@@ -78,10 +81,10 @@ function mapOutputToPages( output, replacements, patternMap ) {
         return {
             title: lines[0],
             patterns: lines.slice(1).map( line => {
-                document.getElementById('result_total').innerText = parseInt( document.getElementById('result_total').innerText ) + 1;
+                row.querySelector('.result_total').innerText = parseInt( row.querySelector('.result_total').innerText ) + 1;
                 if ( ! patternMap[ line ] ) {
                     console.warn( 'Missing pattern: ' + line, lines[0] );
-                    document.getElementById('result_hal').innerText = parseInt( document.getElementById('result_hal').innerText ) + 1;
+                    row.querySelector('.result_hal').innerText = parseInt( row.querySelector('.result_hal').innerText ) + 1;
                     return false;
                 }
                 return patternMap[ line ]

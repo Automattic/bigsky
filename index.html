@@ -24,6 +24,14 @@
             width: 95%;
             height: 10rem;
         }
+        table {
+            width: 100%;
+        }
+        #generate {
+            margin: 1rem 0;
+            padding: 0.5rem;
+            font-size: 1.2rem;
+        }
     </style>
   </head>
   <body>
@@ -33,7 +41,6 @@
     <p>This is a helper tool to tweak certain aspects of our thinking, prompts etc.</p>
     <div>
         <div id="app">
-            <form>
                 <h2>Generate your website</h2>
                 <table>
                     <thead>
@@ -44,18 +51,20 @@
                             <td>Hal</td>
                         </tr>
                     </thead>
-                    <tr>
-                        <td>
-                            <textarea class="prompt" placeholder="I would like a website for my photography business. I want it to have a beautiful header that showcases one of my best photos, a section where I can write about my services and experience, a contact page with a form for clients to get in touch with me, and a section where I can showcase my recent blog posts about photography tips and tricks."></textarea>
-                        </td>
-                        <td><textarea class="output"></textarea></td>
-                        <td><ul class="assembler_links"></ul></td>
-                        <td><span class="result_hal">0</span>/<span class="result_total">0</span></td>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <textarea class="prompt" placeholder="A website you want built"></textarea>
+                            </td>
+                            <td><textarea class="output"></textarea></td>
+                            <td><ul class="assembler_links"></ul></td>
+                            <td><span class="result_hal">0</span>/<span class="result_total">0</span></td>
+                        </tr>
+                    </tbody>
 
                 </table>
+                <button id="generate">Generate Next One</button>
                 </div>
-            </form>
         </div>
 
         <div id="config">
