@@ -189,7 +189,7 @@ async function openaiCall( token, model, prompt, replacements = {}, temperature 
     };
 
     try {
-        const response = await fetch( 'https://api.openai.com/v1/chat/completions', requestOptions );
+        const response = await fetch( 'https://public-api.wordpress.com/wpcom/v2/openai-proxy/v1/chat/completions', requestOptions );
         const data = await response.json();
         console.log( data );
         if (data.choices && data.choices.length > 0) {
